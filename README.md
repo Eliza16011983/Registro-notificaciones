@@ -1,31 +1,28 @@
-# Microservicio de Notificaciones
+# Servicio de Notificaciones
 
-Este módulo se encarga de enviar correos electrónicos cuando se registra un nuevo usuario.
+Este módulo no contiene un servicio independiente. El envío de correos electrónicos se realiza directamente desde el backend utilizando el sistema de correo de Django (`django.core.mail`), que internamente utiliza la librería `smtplib`.
 
-## Tecnologías
-- Python 3
-- Flask (opcional)
-- SMTP (correo)
+## 📦 Funcionalidad
 
-## Estructura
-- `main.py`: punto de entrada
-- `email_sender.py`: lógica para enviar correos
-- `.env`: credenciales de correo (no se versiona)
+Al registrar un nuevo usuario desde el frontend:
 
-## Configuración
-1. Crear entorno virtual:
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate
+1. El backend recibe los datos mediante una solicitud `POST`.
+2. Guarda el usuario en la base de datos.
+3. Ejecuta la función `send_mail`, que envía un correo de confirmación al usuario registrado.
 
-2.Instalar dependencias:
-pip install -r requirements.txt
+## 🔐 Seguridad
 
-3.Ejecutar servicio:
-python main.py
+Las credenciales del correo se gestionan mediante variables de entorno definidas en un archivo `.env`, que no se versiona. Se utiliza la librería `python-dotenv` para cargar estas variables de forma segura.
 
-Notas
+## 🧪 Pruebas
 
-    El backend hace una solicitud HTTP a este servicio para disparar el correo.
+Se realizaron pruebas con distintos correos electrónicos y se verificó la recepción de los mensajes en la bandeja de entrada. El flujo completo fue validado localmente, incluyendo:
 
-    Verificar que las variables de entorno estén correctamente configuradas.
+- Registro desde el frontend
+- Procesamiento en el backend
+- Envío de correo exitoso
+
+## 📁 Estructura
+
+Este repositorio puede incluir documentación o ejemplos relacionados con el envío de correos, pero no contiene un script ejecutable como `main.py`.
+
