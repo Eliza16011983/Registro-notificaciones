@@ -1,8 +1,11 @@
-# Servicio de Notificaciones
+# Servicio de Notificaciones- microservicio independiente
 
-Este módulo no contiene un servicio independiente. El envío de correos electrónicos se realiza directamente desde el backend utilizando el sistema de correo de Django (`django.core.mail`), que internamente utiliza la librería `smtplib`.
+Microservicio responsable de procesar las notificaciones cuando se crea un nuevo usuario.
+En la opción A del laboratorio, el servicio NO utiliza SES sino un mecanismo simple (por ejemplo loguear o enviar hacia un correo único permitido).
 
-## 📦 Funcionalidad
+
+## Funcionalidad
+Recibir una solicitud desde la API principal indicando que se creó un usuario, y realizar la acción de “notificar”.
 
 Al registrar un nuevo usuario desde el frontend:
 
@@ -10,19 +13,31 @@ Al registrar un nuevo usuario desde el frontend:
 2. Guarda el usuario en la base de datos.
 3. Ejecuta la función `send_mail`, que envía un correo de confirmación al usuario registrado.
 
-## 🔐 Seguridad
+## Estructura
+main.py / app.py
+k8s/
+   deployment.yaml
+   service.yaml
+Dockerfile
 
-Las credenciales del correo se gestionan mediante variables de entorno definidas en un archivo `.env`, que no se versiona. Se utiliza la librería `python-dotenv` para cargar estas variables de forma segura.
+## Rutas
+Método      Ruta            Descripción
+POST       /notify      Recibe datos del nuevo usuario
 
-## 🧪 Pruebas
 
-Se realizaron pruebas con distintos correos electrónicos y se verificó la recepción de los mensajes en la bandeja de entrada. El flujo completo fue validado localmente, incluyendo:
+## Flujo
+1- El backend crea un usuario.
+2- El backend envía una solicitud al servicio de notificaciones.
+3- El servicio procesa la solicitud.
+4- Registra el evento en logs.
 
-- Registro desde el frontend
-- Procesamiento en el backend
-- Envío de correo exitoso
+## Comando para ver logs
+kubectl logs -l app=notificaciones --tail=50
 
-## 📁 Estructura
+## Despliegue
+docker build -t notificaciones:latest .
+kubectl apply -f k8s/deployment.yaml
+kubectl apply -f k8s/service.yaml
 
-Este repositorio puede incluir documentación o ejemplos relacionados con el envío de correos, pero no contiene un script ejecutable como `main.py`.
+
 

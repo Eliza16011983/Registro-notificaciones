@@ -1,7 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: notification-service
+  name: notification-deployment
+  labels:
+    app: notification-service
 spec:
   replicas: 1
   selector:
@@ -13,13 +15,13 @@ spec:
         app: notification-service
     spec:
       containers:
-      - name: notification-service
-        image: elizabethdeleonlantean/notification-service:latest
-        ports:
-        - containerPort: 5000
-        envFrom:
-        - configMapRef:
-            name: notification-config
-        - secretRef:
-            name: notification-secrets
-
+        - name: notification-service
+          image: elizabethdeleonlantean/notification-service:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
+          envFrom:
+            - configMapRef:
+                name: notification-config
+            - secretRef:
+                name: notification-secrets
